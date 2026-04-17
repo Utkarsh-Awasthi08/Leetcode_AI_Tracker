@@ -16,6 +16,11 @@ Rules:
 - If not present → null
 - DO NOT explain anything
 - DO NOT return text outside JSON
+- If user mentions hashmap/map → return HASHMAP
+- If user mentions graph → return GRAPH
+- If array → ARRAY
+- Similarly for other topics of data structures and algorithms.
+- If not found → null
 
 Examples:
 

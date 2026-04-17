@@ -1,7 +1,7 @@
 import express from "express";
 import { saveSubmission } from "./service/graphService.js";
 import cors from "cors";
-
+import { generateMistake } from "./utils/mistakeClassifier.js";
 import { runQuery } from "./service/graphService.js";
 import { extractQuery } from "./utils/llmService.js";
 
@@ -12,13 +12,13 @@ app.use(cors());
 app.post("/submission", async (req, res) => {
   try {
     const data = req.body;
+    console.log("Received submission:", data);
+    const mistake = generateMistake({
+        status: data.status,
+        error: data.error
+    });
 
-    // const mistake = generateMistake({
-    //     status: data.status,
-    //     error: data.error
-    // });
-
-    // data.mistake = mistake;
+    data.mistake = mistake;
     data.topics = data.topics && data.topics.length > 0
       ? data.topics
       : ["General"];
