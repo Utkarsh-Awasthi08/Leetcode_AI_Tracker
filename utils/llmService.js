@@ -12,13 +12,14 @@ Fields:
 - intent (GET_PROBLEMS, GET_ERRORS, GET_MISTAKES)
 
 Rules:
-- topic must be uppercase (ARRAY, DP, GRAPH, etc.)
+- topic must be uppercase (ARRAY, DP, GRAPH, DYNAMIC PROGRAMMING etc.)
 - If not present → null
 - DO NOT explain anything
 - DO NOT return text outside JSON
 - If user mentions hashmap/map → return HASHMAP
 - If user mentions graph → return GRAPH
 - If array → ARRAY
+- If dp/dynamic programming → DYNAMIC PROGRAMMING
 - Similarly for other topics of data structures and algorithms.
 - If not found → null
 

@@ -1,36 +1,28 @@
-export function buildCypher(filters, userId) {
-    const { topic, status, error } = filters;
+export function buildCypher(filters) {
+    const { topic, status } = filters;
   
     let query = `
   MATCH (u:User {id: $userId})-[:MADE]->(s:Submission)-[:FOR]->(p:Problem)
-  OPTIONAL MATCH (p)-[:BELONGS_TO]->(t:Topic)
-  OPTIONAL MATCH (s)-[:HAS_ERROR]->(e:Error)
-  OPTIONAL MATCH (s)-[:HAS_MISTAKE]->(m:Mistake)
   `;
   
-    let where = [];
-  
-    // ✅ Apply filters ONLY if present
     if (topic) {
-      where.push(`t.name = $topic`);
+      query += `
+  MATCH (p)-[:BELONGS_TO]->(t:Topic)
+  WHERE t.name = $topic
+  `;
     }
   
     if (status) {
-      where.push(`s.status = $status`);
+      query += topic
+        ? `AND s.status = $status\n`
+        : `WHERE s.status = $status\n`;
     }
   
-    if (error) {
-      where.push(`e.type = $error`);
-    }
-  
-    // ✅ WHERE clause
-    if (where.length > 0) {
-      query += `\nWHERE ${where.join(" AND ")}\n`;
-    }
-  
-    // ✅ Always return everything
     query += `
-  RETURN 
+  OPTIONAL MATCH (s)-[:HAS_ERROR]->(e:Error)
+  OPTIONAL MATCH (s)-[:HAS_MISTAKE]->(m:Mistake)
+  
+  RETURN DISTINCT
     p.name AS problem,
     s.status AS status,
     e.type AS error,

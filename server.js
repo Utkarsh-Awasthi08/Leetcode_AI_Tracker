@@ -4,6 +4,7 @@ import cors from "cors";
 import { generateMistake } from "./utils/mistakeClassifier.js";
 import { runQuery } from "./service/graphService.js";
 import { extractQuery } from "./utils/llmService.js";
+import { formatResponse } from "./utils/formatter.js";
 
 const app = express();
 app.use(express.json());
@@ -24,7 +25,7 @@ app.post("/submission", async (req, res) => {
       : ["General"];
     console.log(data);
     await saveSubmission(data);
-    res.send("Saved successfully 🚀");
+    res.json({msg : "Saved successfully 🚀"});
   } catch (err) {
     console.error(err);
     res.status(500).send("Error saving data");
@@ -43,9 +44,11 @@ app.post("/query", async (req, res) => {
     // 🔹 Step 2: Run query
     const result = await runQuery(filters, userId);
 
+    const answer = await formatResponse(userQuery, result);
+
     res.json({
       filters,
-      result
+      result, answer
     });
 
   } catch (err) {
